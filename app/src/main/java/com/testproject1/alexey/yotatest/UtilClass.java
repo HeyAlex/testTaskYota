@@ -1,5 +1,7 @@
 package com.testproject1.alexey.yotatest;
 
+import android.util.Patterns;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,9 +44,12 @@ public class UtilClass {
         return line;
     }
 
-    private static boolean validateURL(String url){
-        //if(url.contains("http"))
-        return true;
+    public static boolean validateHttpUrl(String url) {
+        return url.contains("http");
+    }
+
+    public static boolean validateUrl(String url) {
+        return Patterns.WEB_URL.matcher(url).matches();
     }
 
 }

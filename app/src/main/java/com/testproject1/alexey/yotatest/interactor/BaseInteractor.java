@@ -6,6 +6,6 @@ package com.testproject1.alexey.yotatest.interactor;
 
 public abstract class BaseInteractor {
     public abstract void OnComplete(String text);
-    public abstract void OnError();
+    public abstract void OnError(String error);
     public abstract void destroy();
 }

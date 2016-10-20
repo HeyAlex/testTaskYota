@@ -5,11 +5,14 @@ package com.testproject1.alexey.yotatest.callback;
  */
 
 public interface IMainView {
-    void OnEmptyData();
 
     void DisplayResult(String data);
 
     void InteruptDownloading();
 
     void enableState(boolean state);
+
+    void enableStateButton(boolean state);
+
+    void OnError(String hint);
 }

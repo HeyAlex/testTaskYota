@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -33,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements IMainView{
     @Bind(R.id.resultText)
     TextView resultText;
 
+    @Bind(R.id.error)
+    TextView error;
+
     @Bind(R.id.editTextUrl)
     EditText urlText;
 
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements IMainView{
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mPresenter = new MainPresenter(this);
+        enableStateButton(false);
         urlText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -50,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements IMainView{
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                mPresenter.validateUrl();
+                mPresenter.validateUrl(charSequence.toString());
             }
 
             @Override
@@ -62,16 +67,33 @@ public class MainActivity extends AppCompatActivity implements IMainView{
     }
 
 
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            try {
+                mPresenter.cancelTask();
+            } catch (NullPointerException ex) {
+            }
+            enableState(true);
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+
     @Override
     public void OnEmptyData() {
 
-        enableState(true);
+      //  enableState(true);
     }
+
+
+
 
     @Override
     public void DisplayResult(String data) {
         resultText.setText(data);
-        enableState(true);
+       // enableState(true);
     }
 
     @Override
@@ -85,6 +107,16 @@ public class MainActivity extends AppCompatActivity implements IMainView{
     public void enableState(boolean state) {
         mButton.setEnabled(state);
         urlText.setEnabled(state);
+    }
+
+    @Override
+    public void enableStateButton(boolean state) {
+        mButton.setEnabled(state);
+    }
+
+    @Override
+    public void OnValidationError(String hint) {
+        error.setText(hint);
     }
 
 }

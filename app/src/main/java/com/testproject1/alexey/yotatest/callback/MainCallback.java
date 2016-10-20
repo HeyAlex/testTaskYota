@@ -5,9 +5,9 @@ package com.testproject1.alexey.yotatest.callback;
  */
 
 public interface MainCallback {
-    void validateUrl();
+    void validateUrl(String url);
     void getData(String url);
-    void OnErrorToGetData();
+    void OnErrorToGetData(String error);
     void OnSuccesesToGetData(String data);
     void cancelTask();
 }

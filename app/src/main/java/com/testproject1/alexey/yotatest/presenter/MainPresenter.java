@@ -1,5 +1,6 @@
 package com.testproject1.alexey.yotatest.presenter;
 
+import com.testproject1.alexey.yotatest.UtilClass;
 import com.testproject1.alexey.yotatest.callback.IMainView;
 import com.testproject1.alexey.yotatest.callback.MainCallback;
 import com.testproject1.alexey.yotatest.interactor.MainInteractor;
@@ -18,8 +19,16 @@ public class MainPresenter implements MainCallback{
     }
 
     @Override
-    public void validateUrl() {
+    public void validateUrl(String url) {
+        if(UtilClass.validateUrl(url)){
+          mCallback.enableStateButton(true);
+            mCallback.OnError("");
+        }else {
+            if(UtilClass.validateHttpUrl(url)) mCallback.OnError("Enter correct URL please");
+            else mCallback.OnError("URL should start with \"http\" ");
 
+            mCallback.enableStateButton(false);
+        }
     }
 
     @Override
@@ -28,18 +37,20 @@ public class MainPresenter implements MainCallback{
     }
 
     @Override
-    public void OnErrorToGetData() {
-        mCallback.OnEmptyData();
+    public void OnErrorToGetData(String error) {
+        mCallback.OnError(error);
     }
 
     @Override
     public void OnSuccesesToGetData(String data) {
         mCallback.DisplayResult(data);
+        mCallback.enableState(true);
     }
 
     @Override
     public void cancelTask() {
         mInteractor.destroy();
+        mCallback.enableState(true);
     }
 
 

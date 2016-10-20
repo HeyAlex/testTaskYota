@@ -8,8 +8,9 @@ import com.testproject1.alexey.yotatest.interactor.MainInteractor;
  * Created by ALEXEY on 10/16/2016.
  */
 
-public class MainPresenter extends BasePresenter implements MainCallback{
+public class MainPresenter implements MainCallback{
 
+    private MainInteractor mInteractor;
     private IMainView mCallback;
     public MainPresenter(IMainView mCallback) {
         mInteractor = new MainInteractor(this);
@@ -41,7 +42,7 @@ public class MainPresenter extends BasePresenter implements MainCallback{
         mInteractor.destroy();
     }
 
-    @Override
+
     public void destroy() {
         mInteractor.destroy();
     }

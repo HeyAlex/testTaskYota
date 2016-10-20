@@ -20,7 +20,7 @@ public class DownloadUrlData extends AsyncTask<Void, Integer, String> {
 
     private String curentURL;
     private BaseInteractor listener;
-    private String web_page;
+    private String source;
 
     public DownloadUrlData(BaseInteractor listener, String url) {
         this.curentURL = url;
@@ -30,53 +30,25 @@ public class DownloadUrlData extends AsyncTask<Void, Integer, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        curentURL = "";
-        web_page = "";
+       // curentURL = "";
+        source = "";
     }
 
     @Override
     protected String doInBackground(Void... voids) {
-        URL url = null;
         try {
-            url = new URL(curentURL);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000);
-            conn.setConnectTimeout(15000);
-            conn.setRequestMethod("GET");
-            conn.setDoInput(true);
-            conn.connect();
-
-            // Receiving data through the input stream
-            InputStream is = conn.getInputStream();
-            web_page = readStringFromInputStream(is);
-            is.close();
-            return null;
-
+            source = UtilClass.downloadURL(curentURL);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-      return null;
+        return null;
     }
 
-    private static String readStringFromInputStream(InputStream is) throws IOException {
-        String line = "";
-        StringBuilder total = new StringBuilder();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-
-        while ((line = reader.readLine()) != null) {
-            total.append(line);
-        }
-
-        line = total.toString();
-        return line;
-    }
 
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        if(web_page.isEmpty()) listener.OnError();
-        else listener.OnComplete(web_page);
+        if(source.isEmpty()) listener.OnError();
+        else listener.OnComplete(source);
     }
 }

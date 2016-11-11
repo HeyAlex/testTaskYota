@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -26,13 +25,13 @@ public class UtilClass {
         conn.connect();
 
         InputStream is = conn.getInputStream();
-        String source  = readStringFromInputStream(is);
+        String source  = readeFromStream(is);
         is.close();
         return source;
     }
 
-    private static String readStringFromInputStream(InputStream is) throws IOException {
-        String line = "";
+    private static String readeFromStream(InputStream is) throws IOException {
+        String line;
         StringBuilder total = new StringBuilder();
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
@@ -44,11 +43,11 @@ public class UtilClass {
         return line;
     }
 
-    public static boolean validateHttpUrl(String url) {
-        return url.contains("http");
+    public static boolean mainValidation(String url) {
+        return url.contains("http://");
     }
 
-    public static boolean validateUrl(String url) {
+    public static boolean urlValidation(String url) {
         return Patterns.WEB_URL.matcher(url).matches();
     }
 

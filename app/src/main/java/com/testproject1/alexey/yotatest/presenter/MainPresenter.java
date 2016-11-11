@@ -20,12 +20,12 @@ public class MainPresenter implements MainCallback{
 
     @Override
     public void validateUrl(String url) {
-        if(UtilClass.validateUrl(url)){
+        if(UtilClass.urlValidation(url)){
           mCallback.enableStateButton(true);
             mCallback.OnError("");
         }else {
-            if(UtilClass.validateHttpUrl(url)) mCallback.OnError("Enter correct URL please");
-            else mCallback.OnError("URL should start with \"http\" ");
+            if(UtilClass.mainValidation(url)) mCallback.OnError("URL should be correct");
+            else mCallback.OnError("Start URL with \"http://\" ");
 
             mCallback.enableStateButton(false);
         }

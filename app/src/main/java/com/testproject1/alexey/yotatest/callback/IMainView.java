@@ -15,4 +15,5 @@ public interface IMainView {
     void enableStateButton(boolean state);
 
     void OnError(String hint);
+
 }

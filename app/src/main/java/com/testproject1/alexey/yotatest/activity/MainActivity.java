@@ -1,7 +1,7 @@
 package com.testproject1.alexey.yotatest.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.testproject1.alexey.yotatest.R;
 import com.testproject1.alexey.yotatest.callback.IMainView;
-import com.testproject1.alexey.yotatest.callback.MainCallback;
 import com.testproject1.alexey.yotatest.presenter.MainPresenter;
 
 import butterknife.Bind;
@@ -45,7 +44,17 @@ public class MainActivity extends AppCompatActivity implements IMainView{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         mPresenter = new MainPresenter(this);
+
+        if (savedInstanceState != null){
+            error.setText(savedInstanceState.getString("ERROR"));
+            resultText.setText(savedInstanceState.getString("DATA"));
+            urlText.setText(savedInstanceState.getString("URL"));
+            enableStateButton(savedInstanceState.getBoolean("BUTTON_STATE"));
+        }
+
+
         enableStateButton(false);
         urlText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -66,26 +75,28 @@ public class MainActivity extends AppCompatActivity implements IMainView{
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
+        outState.putString("ERROR", error.getText().toString());
+        outState.putString("DATA",resultText.getText().toString());
+        outState.putString("URL",urlText.getText().toString());
+        outState.putBoolean("BUTTON_STATE",mButton.isEnabled());
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             try {
-                mPresenter.cancelTask();
+                InteruptDownloading();
             } catch (NullPointerException ex) {
+                enableState(true);
             }
-            enableState(true);
         }
         return super.onKeyDown(keyCode, event);
     }
 
-
-    @Override
-    public void OnEmptyData() {
-
-      //  enableState(true);
-    }
 
 
 
@@ -93,13 +104,12 @@ public class MainActivity extends AppCompatActivity implements IMainView{
     @Override
     public void DisplayResult(String data) {
         resultText.setText(data);
-       // enableState(true);
     }
 
     @Override
     public void InteruptDownloading() {
         mPresenter.cancelTask();
-        enableState(true);
+        enableStateButton(true);
     }
 
 
@@ -115,8 +125,14 @@ public class MainActivity extends AppCompatActivity implements IMainView{
     }
 
     @Override
-    public void OnValidationError(String hint) {
+    public void OnError(String hint) {
         error.setText(hint);
+        enableState(true);
     }
 
+    @Override
+    protected void onDestroy() {
+        mPresenter.destroy();
+        super.onDestroy();
+    }
 }

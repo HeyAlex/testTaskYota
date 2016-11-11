@@ -4,13 +4,8 @@ import android.os.AsyncTask;
 
 import com.testproject1.alexey.yotatest.interactor.BaseInteractor;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.FileNotFoundException;
+import java.net.UnknownHostException;
 
 /**
  * Created by ALEXEY on 10/18/2016.
@@ -21,6 +16,7 @@ public class DownloadUrlData extends AsyncTask<Void, Integer, String> {
     private String curentURL;
     private BaseInteractor listener;
     private String source;
+    private String error;
 
     public DownloadUrlData(BaseInteractor listener, String url) {
         this.curentURL = url;
@@ -30,16 +26,24 @@ public class DownloadUrlData extends AsyncTask<Void, Integer, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-       // curentURL = "";
         source = "";
+        error = "";
     }
 
     @Override
     protected String doInBackground(Void... voids) {
         try {
             source = UtilClass.downloadURL(curentURL);
-        } catch (IOException e) {
-            e.printStackTrace();
+            if(source.isEmpty()) error = "Nothing on current URL";
+        }
+        catch (FileNotFoundException ex) {
+            error = "Host exist, but current url is not found";
+        }
+        catch(UnknownHostException ex) {
+            error = "Host doesn't exist";
+        }
+        catch (Exception ex) {
+            error = "Something gonna wrong";
         }
         return null;
     }
@@ -48,7 +52,7 @@ public class DownloadUrlData extends AsyncTask<Void, Integer, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        if(source.isEmpty()) listener.OnError();
+        if(source.isEmpty()) listener.OnError(error);
         else listener.OnComplete(source);
     }
 }
